@@ -1,0 +1,717 @@
+# Bold Coat Painters Website - Phase 1: Foundation Setup
+
+You are setting up the foundation for boldcoatpainters.com, a complete migration from WordPress to a modern Astro site for Bold Coat Painters, a high-end residential painting company in Chicago. This is Phase 1 of 9, focused EXCLUSIVELY on FOUNDATION. Do not build page sections, content, or full forms yet. Those are later phases.
+
+Always use the latest stable version of every dependency. Do not pin to specific versions you remember; check for the latest stable release at install time and use that. If you are unsure what the latest version is, use `npm view <package> version` or use `latest` tag in install commands.
+
+================================================================================
+PROJECT CONTEXT
+================================================================================
+
+- Company: Bold Coat Painters (Bold Coat LLC), Chicago IL, residential painting, year 2
+- Owner: Mohmed
+- Target audience: high-end homeowners in North Shore suburbs (Winnetka, Glencoe, Lake Forest, Highland Park, Hinsdale, Wilmette, Kenilworth) and affluent Chicago neighborhoods (Lincoln Park, Gold Coast, Lakeview), $3,000+ avg ticket
+- Services: Interior Painting, Exterior Painting, Cabinet Painting/Refinishing
+- Eventual full site replacing WordPress at boldcoatpainters.com
+- Three landing pages for paid Google Ads: /interior-quote/, /exterior-quote/, /cabinet-quote/
+- SEO-focused service pages: /services/interior-painting/, /services/exterior-painting/, /services/cabinet-painting/
+- Area pages: /areas/[region]/[city]/ (Phase 5)
+- Blog at /blog/ (Phase 6)
+- Site must rank organically. Indexable, real E-E-A-T signals, named author (the owner)
+
+================================================================================
+TECH STACK (use exactly these, always latest stable)
+================================================================================
+
+- Framework: Astro (latest stable)
+- Styling: Tailwind CSS (latest) via official Astro integration
+- Language: TypeScript (latest stable), strict mode everywhere
+- Form library: React (via @astrojs/react) + React Hook Form + Zod (form built in Phase 2)
+- Validation: Zod (shared client + server schemas)
+- Hosting: Cloudflare Pages static + Cloudflare Pages Functions
+- Email: Zoho Mail SMTP via Nodemailer (server-side, in Pages Function)
+- CRM: DripJobs webhook (POST JSON)
+- Spam protection: Cloudflare Turnstile
+- Analytics: Google Tag Manager (single container drives GA4, Google Ads, Microsoft Clarity)
+- Linting: ESLint + Prettier
+- Node: pin via .nvmrc to current LTS
+
+================================================================================
+WHAT TO BUILD IN PHASE 1
+================================================================================
+
+--------------------------------------------------------------------------------
+1. PROJECT SCAFFOLD
+--------------------------------------------------------------------------------
+
+Initialize Astro with TypeScript strict mode. Add integrations: @astrojs/tailwind, @astrojs/react, @astrojs/sitemap. Configure astro.config.mjs for static output (output: 'static'). The Cloudflare adapter is NOT needed for static. Functions in /functions/ directory are auto-detected by Cloudflare Pages.
+
+--------------------------------------------------------------------------------
+2. REPO STRUCTURE
+--------------------------------------------------------------------------------
+
+Create exactly this structure:
+
+.
+├── .env.example                      # committed
+├── .gitignore                        # update existing
+├── .nvmrc                            # current LTS
+├── .prettierrc.json
+├── .prettierignore
+├── .eslintrc.cjs
+├── astro.config.mjs
+├── tailwind.config.ts
+├── tsconfig.json
+├── package.json
+├── README.md
+├── wrangler.toml                     # Cloudflare Pages config
+├── public/
+│   ├── images/
+│   │   ├── hero/.gitkeep
+│   │   ├── portfolio/.gitkeep
+│   │   ├── trust/.gitkeep
+│   │   └── logo/.gitkeep
+│   ├── favicon.ico                   # placeholder
+│   ├── robots.txt
+│   └── llms.txt                      # AI crawler index
+├── functions/
+│   └── api/
+│       └── lead.ts                   # form handler (shell only)
+├── src/
+│   ├── config/
+│   │   ├── site.ts                   # business info, contact, hours, certs, owner
+│   │   ├── theme.ts                  # design tokens
+│   │   ├── routes.ts                 # routing config (single source of truth)
+│   │   ├── nav.ts                    # navigation structure
+│   │   └── env.ts                    # Zod-validated env vars
+│   ├── content/
+│   │   ├── config.ts                 # Astro Content Collections schemas
+│   │   ├── blog/.gitkeep             # blog posts (Phase 6)
+│   │   ├── areas/.gitkeep            # area pages (Phase 5)
+│   │   └── pages/.gitkeep            # per-page content (Phase 3+)
+│   ├── components/
+│   │   ├── layout/
+│   │   │   ├── BaseLayout.astro      # HTML head, GTM, fonts, schema
+│   │   │   ├── LandingLayout.astro   # for LPs (no nav, minimal footer)
+│   │   │   └── MarketingLayout.astro # for full site (nav, full footer)
+│   │   ├── seo/
+│   │   │   ├── SEOHead.astro         # meta, OG, Twitter
+│   │   │   └── StructuredData.astro  # JSON-LD schema injection
+│   │   ├── analytics/
+│   │   │   └── GoogleTagManager.astro
+│   │   ├── nav/
+│   │   │   ├── Header.astro          # placeholder (Phase 2)
+│   │   │   └── Footer.astro          # placeholder (Phase 2)
+│   │   └── ui/
+│   │       ├── Button.astro
+│   │       ├── Container.astro
+│   │       └── PhoneLink.astro
+│   ├── lib/
+│   │   ├── analytics.ts              # GTM dataLayer helpers (typed)
+│   │   ├── format.ts                 # phone formatter, etc.
+│   │   ├── seo.ts                    # canonical/meta helpers
+│   │   └── schema.ts                 # JSON-LD builders (LocalBusiness, Person, etc.)
+│   ├── pages/
+│   │   ├── index.astro               # homepage placeholder (MarketingLayout)
+│   │   ├── about.astro               # placeholder (MarketingLayout)
+│   │   ├── contact.astro             # placeholder (MarketingLayout)
+│   │   ├── services/
+│   │   │   ├── index.astro           # services hub placeholder
+│   │   │   ├── interior-painting.astro
+│   │   │   ├── exterior-painting.astro
+│   │   │   └── cabinet-painting.astro
+│   │   ├── interior-quote.astro      # LP placeholder (LandingLayout)
+│   │   ├── exterior-quote.astro      # LP placeholder (LandingLayout)
+│   │   ├── cabinet-quote.astro       # LP placeholder (LandingLayout)
+│   │   ├── thank-you.astro           # form success
+│   │   └── 404.astro
+│   ├── styles/
+│   │   └── global.css                # Tailwind directives + base
+│   └── env.d.ts                      # TS env types
+└── tests/.gitkeep
+
+--------------------------------------------------------------------------------
+3. CONFIGURATION FILES (CRITICAL)
+--------------------------------------------------------------------------------
+
+`src/config/site.ts` is the single source of truth for business info:
+
+export const siteConfig = {
+  name: 'Bold Coat Painters',
+  legalName: 'Bold Coat LLC',
+  domain: 'boldcoatpainters.com',
+  url: 'https://boldcoatpainters.com',
+  description: 'High-end residential painting in Chicago and the North Shore. Interior, exterior, and cabinet refinishing for Winnetka, Glencoe, Lake Forest, Highland Park, Hinsdale, Wilmette, and Chicago neighborhoods.',
+  shortDescription: 'High-end residential painting in Chicago and the North Shore.',
+
+  phone: {
+    display: '(773) 899-7215',
+    tel: '+17738997215',
+  },
+  email: 'info@boldcoatpainters.com',
+  address: {
+    street: '5901 N Cicero Ave Suite 503',
+    city: 'Chicago',
+    state: 'IL',
+    zip: '60646',
+    country: 'US',
+  },
+  geo: {
+    latitude: 41.987,
+    longitude: -87.747,
+  },
+  hours: {
+    monday: '8:00 AM - 6:00 PM',
+    tuesday: '8:00 AM - 6:00 PM',
+    wednesday: '8:00 AM - 6:00 PM',
+    thursday: '8:00 AM - 6:00 PM',
+    friday: '8:00 AM - 6:00 PM',
+    saturday: '9:00 AM - 3:00 PM',
+    sunday: 'Closed',
+  },
+  social: {
+    google: 'https://share.google/isIy1HUXIecl9bTL6',
+    thumbtack: 'https://www.thumbtack.com/il/skokie/general-contractors/bold-coat-painters/service/483230277852979203',
+  },
+  certifications: [
+    { label: 'EPA Lead-Safe Certified', certNumber: 'R1123604', url: 'https://www.epa.gov/lead' },
+    { label: 'Illinois BEP Certified' },
+    { label: 'Licensed, Bonded & Insured' },
+  ],
+  trust: {
+    googleRating: 5.0,        // TODO: update with real value
+    googleReviewCount: 0,     // TODO: update with real value
+    yearsInBusiness: 2,
+  },
+  serviceAreas: {
+    primary: ['Chicago', 'North Shore'],
+    suburbs: [
+      'Winnetka', 'Glencoe', 'Lake Forest', 'Highland Park', 'Wilmette',
+      'Kenilworth', 'Northbrook', 'Hinsdale', 'Lincoln Park', 'Gold Coast',
+      'Lakeview', 'Old Town', 'Bucktown',
+    ],
+  },
+
+  owner: {
+    name: 'Mohmed',  // owner full name TBD
+    title: 'Founder & Lead Estimator',
+    bio: 'Mohmed founded Bold Coat Painters to bring high-end finish work to Chicago and the North Shore. EPA Lead-Safe certified, with a focus on premium materials and meticulous prep.',
+    credentials: ['EPA Lead-Safe Certified', 'Illinois BEP Certified'],
+    photo: '/images/team/mohmed.jpg',  // placeholder path
+  },
+} as const
+
+export type SiteConfig = typeof siteConfig
+
+
+`src/config/theme.ts` defines design tokens that Tailwind references:
+
+export const theme = {
+  colors: {
+    primary: {
+      50: '#eff6ff',
+      100: '#dbeafe',
+      500: '#2563eb',
+      600: '#1d4ed8',
+      700: '#1e40af',
+      900: '#1e3a8a',
+    },
+    neutral: {
+      50: '#fafafa',
+      100: '#f5f5f5',
+      200: '#e5e5e5',
+      400: '#a3a3a3',
+      600: '#525252',
+      800: '#262626',
+      900: '#171717',
+    },
+    accent: {
+      gold: '#c9a961',
+    },
+  },
+  fonts: {
+    heading: ['"Playfair Display"', 'serif'],
+    body: ['Inter', 'system-ui', 'sans-serif'],
+  },
+  spacing: {
+    section: '6rem',
+  },
+} as const
+
+export type Theme = typeof theme
+
+Wire `theme.ts` into `tailwind.config.ts` so Tailwind classes pull from there. Do NOT hardcode hex values in `tailwind.config.ts`. Import from `theme.ts`.
+
+
+`src/config/routes.ts` is routing as single source of truth:
+
+export type RouteConfig = {
+  path: string
+  label: string
+  noindex: boolean
+  inSitemap: boolean
+}
+
+export const routes = {
+  home: { path: '/', label: 'Home', noindex: false, inSitemap: true },
+  about: { path: '/about/', label: 'About', noindex: false, inSitemap: true },
+  contact: { path: '/contact/', label: 'Contact', noindex: false, inSitemap: true },
+
+  services: {
+    index: { path: '/services/', label: 'Services', noindex: false, inSitemap: true },
+    interior: { path: '/services/interior-painting/', label: 'Interior Painting', noindex: false, inSitemap: true },
+    exterior: { path: '/services/exterior-painting/', label: 'Exterior Painting', noindex: false, inSitemap: true },
+    cabinets: { path: '/services/cabinet-painting/', label: 'Cabinet Painting', noindex: false, inSitemap: true },
+  },
+
+  // Paid traffic landing pages, indexable but NOT in sitemap
+  // (Google can find them via ads, we don't actively ask for crawl)
+  quote: {
+    interior: { path: '/interior-quote/', label: 'Interior Quote', noindex: false, inSitemap: false },
+    exterior: { path: '/exterior-quote/', label: 'Exterior Quote', noindex: false, inSitemap: false },
+    cabinets: { path: '/cabinet-quote/', label: 'Cabinet Quote', noindex: false, inSitemap: false },
+  },
+
+  // Future phases
+  areas: { path: '/areas/', label: 'Service Areas', noindex: false, inSitemap: true },
+  blog: { path: '/blog/', label: 'Blog', noindex: false, inSitemap: true },
+
+  thankYou: { path: '/thank-you/', label: 'Thank You', noindex: true, inSitemap: false },
+  privacy: { path: '/privacy/', label: 'Privacy', noindex: false, inSitemap: true },
+  terms: { path: '/terms/', label: 'Terms', noindex: false, inSitemap: true },
+} as const
+
+
+`src/config/nav.ts` is the main nav structure:
+
+import { routes } from './routes'
+
+export const mainNav = [
+  routes.services.index,
+  routes.areas,
+  routes.about,
+  routes.blog,
+  routes.contact,
+] as const
+
+export const footerNav = {
+  services: [
+    routes.services.interior,
+    routes.services.exterior,
+    routes.services.cabinets,
+  ],
+  company: [
+    routes.about,
+    routes.contact,
+    routes.privacy,
+    routes.terms,
+  ],
+} as const
+
+
+`src/config/env.ts` validates env vars with Zod, fail-fast at build:
+
+import { z } from 'zod'
+
+const envSchema = z.object({
+  PUBLIC_GTM_ID: z.string().regex(/^GTM-[A-Z0-9]+$/).optional(),
+  PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
+})
+
+export const env = envSchema.parse(import.meta.env)
+export type Env = z.infer<typeof envSchema>
+
+Server-only env vars (used in Functions) are validated separately inside the Function file using its own Zod schema against the runtime context.
+
+--------------------------------------------------------------------------------
+4. .env.example (committed)
+--------------------------------------------------------------------------------
+
+# Public (build-time, exposed to client)
+PUBLIC_GTM_ID=GTM-XXXXXXX
+PUBLIC_TURNSTILE_SITE_KEY=
+
+# Server-only (set in Cloudflare Pages dashboard, NOT committed)
+TURNSTILE_SECRET_KEY=
+DRIPJOBS_WEBHOOK_URL=
+
+# Zoho Mail SMTP
+ZOHO_SMTP_HOST=smtp.zoho.com
+ZOHO_SMTP_PORT=465
+ZOHO_SMTP_USER=info@boldcoatpainters.com
+ZOHO_SMTP_PASS=
+ZOHO_FROM_EMAIL=info@boldcoatpainters.com
+ZOHO_TO_EMAIL=info@boldcoatpainters.com
+
+--------------------------------------------------------------------------------
+5. public/robots.txt
+--------------------------------------------------------------------------------
+
+User-agent: *
+Allow: /
+
+# AI crawlers explicitly allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+Sitemap: https://boldcoatpainters.com/sitemap-index.xml
+
+--------------------------------------------------------------------------------
+6. public/llms.txt
+--------------------------------------------------------------------------------
+
+Markdown-formatted index for AI crawlers. Pull URLs from `routes.ts`. Format:
+
+# Bold Coat Painters
+
+> High-end residential painting company serving Chicago and the North Shore. Specializing in interior painting, exterior painting, and cabinet refinishing for premium homes in Winnetka, Glencoe, Lake Forest, Highland Park, Hinsdale, Wilmette, and Chicago neighborhoods. EPA Lead-Safe Certified, Illinois BEP Certified, fully licensed and insured.
+
+## Services
+
+- [Interior Painting](https://boldcoatpainters.com/services/interior-painting/): Premium interior painting for whole-home repaints, single rooms, trim, and ceilings.
+- [Exterior Painting](https://boldcoatpainters.com/services/exterior-painting/): Full exterior repaints with Chicago-climate-specific prep and premium coatings.
+- [Cabinet Painting & Refinishing](https://boldcoatpainters.com/services/cabinet-painting/): Sprayed cabinet refinishing using SW Emerald Urethane and BM Advance.
+
+## About
+
+- [About Bold Coat Painters](https://boldcoatpainters.com/about/)
+- [Contact](https://boldcoatpainters.com/contact/)
+
+--------------------------------------------------------------------------------
+7. BaseLayout.astro REQUIREMENTS
+--------------------------------------------------------------------------------
+
+- HTML lang, charset, viewport meta
+- <GoogleTagManager /> integration (no-ops if env unset)
+- <SEOHead /> with full props pass-through
+- <StructuredData /> for sitewide LocalBusiness + Organization JSON-LD
+- Google Fonts: preconnect + display=swap for Playfair Display + Inter
+- Global CSS imported
+- Robots meta defaults to index,follow (NOT noindex). Per-page noindex prop overrides.
+- <meta name="theme-color"> from theme.ts
+
+--------------------------------------------------------------------------------
+8. MarketingLayout.astro and LandingLayout.astro
+--------------------------------------------------------------------------------
+
+- Both wrap BaseLayout
+- MarketingLayout: includes <Header> (placeholder for Phase 2) and full <Footer> (placeholder)
+- LandingLayout: minimal sticky header (logo + phone + CTA), minimal footer (just contact info, no nav links). Designed for paid LP conversion focus.
+- Both accept SEO props passed through to BaseLayout
+
+--------------------------------------------------------------------------------
+9. SEOHead.astro REQUIREMENTS
+--------------------------------------------------------------------------------
+
+Props: title, description, canonical?, noindex? (defaults false), ogImage?, ogType? (defaults 'website').
+
+- Title format: `${pageTitle} | Bold Coat Painters` (suffix passable via prop)
+- All standard meta + OG + Twitter card tags
+- Canonical URL auto-built from current path + site domain via lib/seo.ts
+- Robots tag respects noindex prop
+
+--------------------------------------------------------------------------------
+10. StructuredData.astro and lib/schema.ts
+--------------------------------------------------------------------------------
+
+lib/schema.ts exports typed builders:
+
+export function buildLocalBusinessSchema(): object
+export function buildOrganizationSchema(): object
+export function buildPersonSchema(): object  // for owner author bio
+export function buildBreadcrumbSchema(items: BreadcrumbItem[]): object
+export function buildServiceSchema(service: ServiceData): object
+export function buildFAQSchema(faqs: FAQItem[]): object
+
+Use Schema.org HomeAndConstructionBusiness (more specific than LocalBusiness). Pull all data from siteConfig.
+
+StructuredData.astro accepts an array of schema objects and outputs them as JSON-LD <script type="application/ld+json"> tags in the page head.
+
+Sitewide includes: Organization + LocalBusiness/HomeAndConstructionBusiness on every page (via BaseLayout). Per-page schema (Service, FAQ, Article, BreadcrumbList) added by individual pages.
+
+--------------------------------------------------------------------------------
+11. GoogleTagManager.astro
+--------------------------------------------------------------------------------
+
+Standard two-snippet GTM install (head + body noscript). Skips entirely if PUBLIC_GTM_ID not set or invalid.
+
+--------------------------------------------------------------------------------
+12. lib/analytics.ts
+--------------------------------------------------------------------------------
+
+Type-safe dataLayer helpers (client-side, used by future form):
+
+export function pushEvent(event: string, data?: Record<string, unknown>): void
+export function trackFormStart(formName: string): void
+export function trackFormStep(formName: string, step: number): void
+export function trackFormSubmit(formName: string, success: boolean): void
+export function trackPhoneClick(): void
+export function trackCTAClick(label: string, location: string): void
+
+--------------------------------------------------------------------------------
+13. lib/format.ts
+--------------------------------------------------------------------------------
+
+export function formatPhone(raw: string): string  // (773) 899-7215
+export function phoneToTel(raw: string): string   // +17738997215
+export function formatHours(hours: SiteConfig['hours']): string  // human-readable
+
+--------------------------------------------------------------------------------
+14. lib/seo.ts
+--------------------------------------------------------------------------------
+
+export function buildCanonical(path: string): string
+export function buildPageTitle(title: string, suffix?: string): string
+export function buildOGImage(path?: string): string
+
+--------------------------------------------------------------------------------
+15. functions/api/lead.ts (SHELL ONLY for Phase 1)
+--------------------------------------------------------------------------------
+
+Working Cloudflare Pages Function:
+
+- Accepts POST with JSON body
+- Validates request body with Zod (placeholder schema: { name: string, email: string, phone: string, message?: string, _formId: string })
+- Validates Turnstile token if TURNSTILE_SECRET_KEY is set (real verification logic)
+- Re-validates env vars from runtime context using Zod
+- Logs submission via console.log (visible in `wrangler tail`)
+- Returns { success: true, message: 'Lead received' } for now
+- Returns structured JSON errors with proper HTTP status (400 validation, 500 server)
+- CORS headers: only allow same-origin
+- TODO comments at integration points for DripJobs POST and Zoho SMTP send (Phase 2)
+- Uses onRequestPost export pattern, types env binding properly
+
+--------------------------------------------------------------------------------
+16. UI PRIMITIVES
+--------------------------------------------------------------------------------
+
+- Button.astro: variants primary, secondary, ghost. Sizes sm, md, lg. Accepts href (becomes <a>) or no href (becomes <button>). Optional data-track-label and data-track-location for analytics. Supports target and rel.
+- Container.astro: max-width wrapper with consistent padding. Sizes sm (640px), md (768px), lg (1024px), xl (1280px), full (100%). Default lg.
+- PhoneLink.astro: formatted phone clickable on mobile, fires phone_click GTM event. Reads phone from siteConfig.
+
+--------------------------------------------------------------------------------
+17. CONTENT COLLECTIONS SETUP
+--------------------------------------------------------------------------------
+
+src/content/config.ts defines schemas for blog, areas, and pages collections. Empty for Phase 1 but ready for content in later phases.
+
+import { defineCollection, z } from 'astro:content'
+
+const blogCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    publishDate: z.date(),
+    updatedDate: z.date().optional(),
+    author: z.string().default('Mohmed'),
+    category: z.enum(['interior', 'exterior', 'cabinets', 'color', 'process', 'cost', 'general']),
+    tags: z.array(z.string()).default([]),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().optional(),
+    draft: z.boolean().default(false),
+    featured: z.boolean().default(false),
+  }),
+})
+
+const areasCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    suburb: z.string(),
+    region: z.enum(['north-shore', 'chicago', 'west-suburbs', 'northwest-suburbs']),
+    state: z.string().default('IL'),
+    zipCodes: z.array(z.string()),
+    title: z.string(),
+    description: z.string(),
+    heroImage: z.string().optional(),
+    architecturalStyles: z.array(z.string()).default([]),
+    neighborhoods: z.array(z.string()).default([]),
+    publishDate: z.date(),
+    updatedDate: z.date().optional(),
+    draft: z.boolean().default(false),
+  }),
+})
+
+export const collections = {
+  blog: blogCollection,
+  areas: areasCollection,
+}
+
+--------------------------------------------------------------------------------
+18. PAGE PLACEHOLDERS
+--------------------------------------------------------------------------------
+
+Each placeholder page must:
+
+- Use the correct layout (MarketingLayout for full site, LandingLayout for LPs)
+- Pass proper SEO props (title, description, canonical via lib/seo.ts)
+- Include <StructuredData> with relevant schema (BreadcrumbList where applicable)
+- Display a Phase 1 placeholder notice with the page name and what's coming
+- Include <PhoneLink> and a <Button> so we can validate components
+- Set noindex flag from routes.ts (most are false, only /thank-you/ is noindex)
+
+--------------------------------------------------------------------------------
+19. wrangler.toml
+--------------------------------------------------------------------------------
+
+Use the latest compatibility_date (today's date in YYYY-MM-DD format). Include nodejs_compat flag and pages_build_output_dir set to "dist".
+
+name = "boldcoatpainters"
+compatibility_date = "<TODAY'S DATE>"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+--------------------------------------------------------------------------------
+20. astro.config.mjs
+--------------------------------------------------------------------------------
+
+- output: 'static'
+- site: 'https://boldcoatpainters.com'
+- trailingSlash: 'always'
+- Integrations: tailwind, react, sitemap (configure to filter out noindex routes via the filter option using routes.ts)
+
+--------------------------------------------------------------------------------
+21. tsconfig.json
+--------------------------------------------------------------------------------
+
+Astro's strictest preset, plus:
+
+- strict: true
+- noUncheckedIndexedAccess: true
+- Path aliases: @/components/*, @/config/*, @/lib/*, @/content/*, @/styles/*
+
+--------------------------------------------------------------------------------
+22. package.json SCRIPTS
+--------------------------------------------------------------------------------
+
+{
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check && tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx,.astro",
+    "lint:fix": "eslint . --ext .ts,.tsx,.astro --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,astro,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,astro,md,json}\""
+  }
+}
+
+--------------------------------------------------------------------------------
+23. README.md
+--------------------------------------------------------------------------------
+
+Cover:
+
+- Project overview (high-end painting company website, Chicago)
+- Tech stack
+- Local setup (clone, nvm use, npm install, cp .env.example .env, fill values, npm run dev)
+- Environment variables explained (each one, purpose, where to get it)
+- Deploy instructions (push to main → Cloudflare Pages auto-deploy)
+- Cloudflare Pages env var setup (which vars go in CF dashboard vs which stay local)
+- DripJobs webhook setup
+- Zoho SMTP app password setup
+- GTM setup
+- Folder structure explanation with what each directory is for
+- Adding a new page (will be detailed in Phase 4)
+- Adding a blog post (will be detailed in Phase 6)
+- Adding an area page (will be detailed in Phase 5)
+- Phase status: "Phase 1 of 9, Foundation"
+
+--------------------------------------------------------------------------------
+24. .gitignore ADDITIONS (append, do not overwrite)
+--------------------------------------------------------------------------------
+
+node_modules
+dist
+.env
+.env.local
+.env.production
+.DS_Store
+.astro
+.wrangler
+.cloudflare
+*.log
+
+--------------------------------------------------------------------------------
+25. ESLint + Prettier
+--------------------------------------------------------------------------------
+
+Sensible defaults. ESLint with Astro plugin and TypeScript parser. Prettier with Astro plugin and Tailwind class-sort plugin. .prettierignore excludes dist, node_modules, .astro.
+
+================================================================================
+ARCHITECTURAL PRINCIPLES (NON-NEGOTIABLE)
+================================================================================
+
+1. Zero hardcoded values outside config files. Every phone number, color, URL, business name reference traces to site.ts, theme.ts, routes.ts, or env vars.
+2. Type safety end-to-end. TypeScript strict. Zod for runtime validation at all boundaries.
+3. Fail-fast. Missing required env vars break the build, not production.
+4. Future-ready, not future-built. Content Collections directories and schemas exist; no content yet. Routing config supports blog/areas; pages don't exist yet.
+5. Component composition. UI primitives in components/ui/, layouts in components/layout/, sections will live in components/sections/ (Phase 2), nav in components/nav/.
+6. Server-only code stays server-only. SMTP credentials and webhook URLs ONLY in functions/. Never imported into src/.
+7. Accessibility from day 1. Semantic HTML, proper heading hierarchy, focus states, aria labels, color contrast 4.5:1+ for body text.
+8. SEO from day 1. Schema.org JSON-LD on every page. Indexable by default. Canonical URLs auto-built. AI crawlers explicitly allowed.
+
+================================================================================
+ACCEPTANCE CRITERIA
+================================================================================
+
+When Phase 1 is complete:
+
+[ ] npm install succeeds
+[ ] npm run dev serves placeholder pages on localhost
+[ ] npm run build produces dist/ with no errors
+[ ] npm run typecheck passes
+[ ] npm run lint passes
+[ ] All placeholder pages resolve and render
+[ ] <head> has correct meta tags including indexable robots tag
+[ ] JSON-LD LocalBusiness/HomeAndConstructionBusiness schema is present on every page
+[ ] GTM snippet renders only if PUBLIC_GTM_ID is set
+[ ] /api/lead Function accepts a POST and returns { success: true }
+[ ] robots.txt allows AI crawlers
+[ ] llms.txt is well-formed and references real URLs
+[ ] No hardcoded business info, colors, URLs outside config files
+[ ] README explains setup, env vars, deployment, file structure
+[ ] Sitemap auto-generates from routes.ts filtering out inSitemap: false routes
+[ ] Repo is ready to deploy to Cloudflare Pages
+
+================================================================================
+WHAT NOT TO BUILD IN PHASE 1
+================================================================================
+
+- Section components (Hero, TrustStrip, Services, etc.), Phase 2
+- Multi-step lead form, Phase 2
+- DripJobs integration in Function, Phase 2
+- Zoho SMTP send, Phase 2
+- Real page content, Phase 3+
+- Real images, Phase 3+
+- Real nav/footer, Phase 2 (placeholders only in Phase 1)
+- Blog posts, Phase 6
+- Area pages, Phase 5
+
+================================================================================
+OUTPUT REQUIREMENTS
+================================================================================
+
+- Create all files listed
+- Inline comments for complex logic only
+- After completion, output a checklist confirming each acceptance criterion
+- Note any deviations with rationale
+- DO NOT use em dashes anywhere (use commas, periods, or parentheses)
+- Code is production-quality, senior-level
+- Always use the latest stable version of every dependency at install time
+- Begin immediately
+
+Begin Phase 1.

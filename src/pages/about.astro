@@ -1,0 +1,40 @@
+---
+import MarketingLayout from '@/components/layout/MarketingLayout.astro'
+import Container from '@/components/ui/Container.astro'
+import Button from '@/components/ui/Button.astro'
+import PhoneLink from '@/components/ui/PhoneLink.astro'
+import { siteConfig } from '@/config/site'
+import { routes } from '@/config/routes'
+import { buildBreadcrumbSchema } from '@/lib/schema'
+import { buildCanonical } from '@/lib/seo'
+
+const breadcrumbs = buildBreadcrumbSchema([
+  { name: 'Home', url: buildCanonical('/') },
+  { name: 'About', url: buildCanonical('/about/') },
+])
+---
+
+<MarketingLayout
+  title="About"
+  description={`Learn about ${siteConfig.name}, a high-end residential painting company in Chicago. Founded by ${siteConfig.owner.name}, EPA Lead-Safe certified.`}
+  schemas={[breadcrumbs]}
+>
+  <section class="py-24">
+    <Container>
+      <div class="text-center">
+        <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-500">
+          Phase 1 Placeholder
+        </p>
+        <h1 class="font-heading text-4xl font-bold text-neutral-900">About {siteConfig.name}</h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-neutral-600">
+          Full about page content coming in Phase 3. Will include owner bio, company story,
+          certifications, and team information.
+        </p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button href={routes.contact.path}>Contact Us</Button>
+          <PhoneLink />
+        </div>
+      </div>
+    </Container>
+  </section>
+</MarketingLayout>

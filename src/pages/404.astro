@@ -1,0 +1,31 @@
+---
+import MarketingLayout from '@/components/layout/MarketingLayout.astro'
+import Container from '@/components/ui/Container.astro'
+import Button from '@/components/ui/Button.astro'
+import PhoneLink from '@/components/ui/PhoneLink.astro'
+import { siteConfig } from '@/config/site'
+import { routes } from '@/config/routes'
+---
+
+<MarketingLayout
+  title="Page Not Found"
+  description={`The page you're looking for doesn't exist. Return to ${siteConfig.name} homepage.`}
+  noindex={true}
+>
+  <section class="py-24">
+    <Container size="md">
+      <div class="text-center">
+        <p class="text-6xl font-bold text-primary-800">404</p>
+        <h1 class="mt-4 font-heading text-3xl font-bold text-neutral-900">Page Not Found</h1>
+        <p class="mx-auto mt-4 max-w-md text-lg text-neutral-600">
+          Sorry, we couldn't find the page you're looking for. It may have been moved or no longer
+          exists.
+        </p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button href={routes.home.path}>Go Home</Button>
+          <PhoneLink />
+        </div>
+      </div>
+    </Container>
+  </section>
+</MarketingLayout>

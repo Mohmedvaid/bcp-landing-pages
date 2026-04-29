@@ -1,0 +1,14 @@
+# Bold Coat Painters
+
+> High-end residential painting company serving Chicago and the North Shore. Specializing in interior painting, exterior painting, and cabinet refinishing for premium homes in Winnetka, Glencoe, Lake Forest, Highland Park, Hinsdale, Wilmette, and Chicago neighborhoods. EPA Lead-Safe Certified, Illinois BEP Certified, fully licensed and insured.
+
+## Services
+
+- [Interior Painting](https://boldcoatpainters.com/services/interior-painting/): Premium interior painting for whole-home repaints, single rooms, trim, and ceilings.
+- [Exterior Painting](https://boldcoatpainters.com/services/exterior-painting/): Full exterior repaints with Chicago-climate-specific prep and premium coatings.
+- [Cabinet Painting & Refinishing](https://boldcoatpainters.com/services/cabinet-painting/): Sprayed cabinet refinishing using SW Emerald Urethane and BM Advance.
+
+## About
+
+- [About Bold Coat Painters](https://boldcoatpainters.com/about/)
+- [Contact](https://boldcoatpainters.com/contact/)

@@ -1,0 +1,47 @@
+---
+import MarketingLayout from '@/components/layout/MarketingLayout.astro'
+import Container from '@/components/ui/Container.astro'
+import Button from '@/components/ui/Button.astro'
+import { siteConfig } from '@/config/site'
+import { routes } from '@/config/routes'
+---
+
+<MarketingLayout
+  title="Thank You"
+  description={`Thank you for contacting ${siteConfig.name}. We'll be in touch shortly.`}
+  noindex={true}
+>
+  <section class="py-24">
+    <Container size="md">
+      <div class="text-center">
+        <div
+          class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100"
+        >
+          <svg
+            class="h-8 w-8 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+        </div>
+        <h1 class="font-heading text-4xl font-bold text-neutral-900">Thank You!</h1>
+        <p class="mx-auto mt-6 max-w-xl text-lg text-neutral-600">
+          We received your request and will get back to you within 1 business day. If you need
+          immediate assistance, call us at
+          <a
+            href={`tel:${siteConfig.phone.tel}`}
+            class="font-semibold text-accent-500 hover:underline"
+          >
+            {siteConfig.phone.display}
+          </a>.
+        </p>
+        <div class="mt-8">
+          <Button href={routes.home.path}>Back to Home</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</MarketingLayout>

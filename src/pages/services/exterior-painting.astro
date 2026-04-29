@@ -1,0 +1,48 @@
+---
+import MarketingLayout from '@/components/layout/MarketingLayout.astro'
+import Container from '@/components/ui/Container.astro'
+import Button from '@/components/ui/Button.astro'
+import PhoneLink from '@/components/ui/PhoneLink.astro'
+import { siteConfig } from '@/config/site'
+import { routes } from '@/config/routes'
+import { buildBreadcrumbSchema, buildServiceSchema } from '@/lib/schema'
+import { buildCanonical } from '@/lib/seo'
+
+const breadcrumbs = buildBreadcrumbSchema([
+  { name: 'Home', url: buildCanonical('/') },
+  { name: 'Services', url: buildCanonical('/services/') },
+  { name: 'Exterior Painting', url: buildCanonical('/services/exterior-painting/') },
+])
+
+const serviceSchema = buildServiceSchema({
+  name: 'Exterior Painting',
+  description:
+    'Full exterior repaints with Chicago-climate-specific prep and premium coatings for homes in Chicago and the North Shore.',
+  url: buildCanonical('/services/exterior-painting/'),
+})
+---
+
+<MarketingLayout
+  title="Exterior Painting"
+  description={`Exterior painting services from ${siteConfig.name}. Full exterior repaints with climate-specific prep and premium coatings in Chicago and the North Shore.`}
+  schemas={[breadcrumbs, serviceSchema]}
+>
+  <section class="py-24">
+    <Container>
+      <div class="text-center">
+        <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-500">
+          Phase 1 Placeholder
+        </p>
+        <h1 class="font-heading text-4xl font-bold text-neutral-900">Exterior Painting</h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-neutral-600">
+          Full service page content coming in Phase 3. Will include process details, pricing
+          guidance, gallery, and FAQs.
+        </p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button href={routes.quote.exterior.path}>Get Exterior Quote</Button>
+          <PhoneLink />
+        </div>
+      </div>
+    </Container>
+  </section>
+</MarketingLayout>

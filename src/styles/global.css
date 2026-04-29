@@ -1,0 +1,140 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Primary (navy, brand color) */
+  --color-primary-50: #f1f3f7;
+  --color-primary-100: #dde2eb;
+  --color-primary-200: #bcc5d7;
+  --color-primary-300: #94a1bb;
+  --color-primary-400: #6e7e9d;
+  --color-primary-500: #4d5d7e;
+  --color-primary-600: #3a4865;
+  --color-primary-700: #2c3753;
+  --color-primary-800: #212d45;
+  --color-primary-900: #181f31;
+  --color-primary-950: #0d121e;
+
+  /* Accent (yellow, CTA color) */
+  --color-accent-50: #fffaeb;
+  --color-accent-100: #fef2c7;
+  --color-accent-200: #fde28a;
+  --color-accent-300: #fbcb4d;
+  --color-accent-400: #f8b526;
+  --color-accent-500: #e89c0d;
+  --color-accent-600: #c87908;
+  --color-accent-700: #a1580a;
+  --color-accent-800: #85460e;
+  --color-accent-900: #723a10;
+  --color-accent-950: #421d04;
+
+  /* Neutral (cool grayscale) */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  /* Font families */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Fraunces', Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Font sizes */
+  --text-display-2xl: 4.5rem;
+  --text-display-2xl--line-height: 1.05;
+  --text-display-2xl--letter-spacing: -0.02em;
+
+  --text-display-xl: 3.75rem;
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--letter-spacing: -0.02em;
+
+  --text-display-lg: 3rem;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.02em;
+
+  --text-display-md: 2.25rem;
+  --text-display-md--line-height: 1.15;
+  --text-display-md--letter-spacing: -0.01em;
+
+  --text-display-sm: 1.875rem;
+  --text-display-sm--line-height: 1.2;
+  --text-display-sm--letter-spacing: -0.01em;
+
+  --text-body-xl: 1.25rem;
+  --text-body-xl--line-height: 1.6;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.6;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.5;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.5;
+  --text-caption--letter-spacing: 0.02em;
+
+  /* Spacing */
+  --spacing-section: 6rem;
+  --spacing-section-sm: 4rem;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Box shadows */
+  --shadow-soft: 0 1px 3px 0 rgb(33 45 69 / 0.05), 0 1px 2px -1px rgb(33 45 69 / 0.05);
+  --shadow-card: 0 4px 12px -2px rgb(33 45 69 / 0.08), 0 2px 6px -2px rgb(33 45 69 / 0.04);
+  --shadow-lifted: 0 12px 32px -8px rgb(33 45 69 / 0.15), 0 4px 12px -4px rgb(33 45 69 / 0.08);
+  --shadow-cta: 0 4px 12px 0 rgb(248 181 38 / 0.35);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-optical-sizing: auto;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-primary-800);
+    background-color: #ffffff;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-primary-800);
+    text-wrap: balance;
+    font-feature-settings: 'ss01', 'ss02';
+  }
+
+  code,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  ::selection {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-400);
+    outline-offset: 2px;
+  }
+}

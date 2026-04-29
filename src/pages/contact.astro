@@ -1,0 +1,45 @@
+---
+import MarketingLayout from '@/components/layout/MarketingLayout.astro'
+import Container from '@/components/ui/Container.astro'
+import Button from '@/components/ui/Button.astro'
+import PhoneLink from '@/components/ui/PhoneLink.astro'
+import { siteConfig } from '@/config/site'
+import { buildBreadcrumbSchema } from '@/lib/schema'
+import { buildCanonical } from '@/lib/seo'
+
+const breadcrumbs = buildBreadcrumbSchema([
+  { name: 'Home', url: buildCanonical('/') },
+  { name: 'Contact', url: buildCanonical('/contact/') },
+])
+---
+
+<MarketingLayout
+  title="Contact"
+  description={`Contact ${siteConfig.name} for a free painting estimate. Call ${siteConfig.phone.display} or email ${siteConfig.email}.`}
+  schemas={[breadcrumbs]}
+>
+  <section class="py-24">
+    <Container>
+      <div class="text-center">
+        <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-500">
+          Phase 1 Placeholder
+        </p>
+        <h1 class="font-heading text-4xl font-bold text-neutral-900">Contact Us</h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-neutral-600">
+          Full contact page with form coming in Phase 3. For now, reach us by phone or email.
+        </p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button href={`mailto:${siteConfig.email}`}>Email Us</Button>
+          <PhoneLink />
+        </div>
+        <address class="mt-8 text-sm not-italic text-neutral-600">
+          <p>{siteConfig.address.street}</p>
+          <p>
+            {siteConfig.address.city}, {siteConfig.address.state}
+            {siteConfig.address.zip}
+          </p>
+        </address>
+      </div>
+    </Container>
+  </section>
+</MarketingLayout>

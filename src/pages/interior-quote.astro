@@ -1,0 +1,34 @@
+---
+import LandingLayout from '@/components/layout/LandingLayout.astro'
+import Container from '@/components/ui/Container.astro'
+import Button from '@/components/ui/Button.astro'
+import PhoneLink from '@/components/ui/PhoneLink.astro'
+import { siteConfig } from '@/config/site'
+---
+
+<LandingLayout
+  title="Get Your Free Interior Painting Quote"
+  description={`Request a free interior painting estimate from ${siteConfig.name}. Premium painting for homes in Chicago and the North Shore.`}
+>
+  <section class="py-24" id="quote-form">
+    <Container size="md">
+      <div class="text-center">
+        <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-500">
+          Phase 1 Placeholder
+        </p>
+        <h1 class="font-heading text-4xl font-bold text-neutral-900">
+          Free Interior Painting Quote
+        </h1>
+        <p class="mx-auto mt-6 max-w-xl text-lg text-neutral-600">
+          Multi-step lead form coming in Phase 2. This landing page is for paid Google Ads traffic.
+        </p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button href={`tel:${siteConfig.phone.tel}`} size="lg">
+            Call {siteConfig.phone.display}
+          </Button>
+          <PhoneLink />
+        </div>
+      </div>
+    </Container>
+  </section>
+</LandingLayout>
