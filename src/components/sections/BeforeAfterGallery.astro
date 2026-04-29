@@ -1,0 +1,86 @@
+---
+import Container from '@/components/ui/Container.astro'
+import Button from '@/components/ui/Button.astro'
+import type { BeforeAfterContent } from '@/types/page-content'
+
+interface Props {
+  content: BeforeAfterContent
+}
+
+const { content } = Astro.props
+---
+
+<section class="bg-primary-800 py-section-sm lg:py-section" aria-labelledby="before-after-heading">
+  <Container size="lg">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-accent-400">
+        {content.eyebrow}
+      </p>
+      <h2 id="before-after-heading" class="font-heading text-display-sm font-bold text-white lg:text-display-md">
+        {content.heading}
+      </h2>
+      <p class="mt-4 text-body-lg text-neutral-300">{content.intro}</p>
+    </div>
+
+    <div class="mt-12 grid gap-8 lg:mt-16 lg:grid-cols-3">
+      {content.sliders.map((slider, idx) => (
+        <div class="overflow-hidden rounded-xl bg-primary-700">
+          <div class="aspect-[4/3]">
+            <img-comparison-slider class="h-full w-full" data-idx={idx}>
+              <img
+                slot="first"
+                src={slider.beforeImage}
+                alt={slider.beforeAlt}
+                width="400"
+                height="300"
+                class="h-full w-full object-cover"
+                loading="lazy"
+              />
+              <img
+                slot="second"
+                src={slider.afterImage}
+                alt={slider.afterAlt}
+                width="400"
+                height="300"
+                class="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </img-comparison-slider>
+          </div>
+          <div class="p-4">
+            <h3 class="font-heading text-base font-semibold text-white">{slider.title}</h3>
+            <p class="mt-0.5 text-sm text-neutral-300">{slider.location}</p>
+            <p class="mt-2 text-body-sm text-neutral-400">{slider.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-10 text-center">
+      <Button
+        variant="ghost"
+        href={content.portfolioCta.href}
+        class="text-white hover:bg-primary-700 hover:text-white"
+        data-track-label="view_portfolio"
+        data-track-location="before-after"
+      >
+        {content.portfolioCta.label}
+      </Button>
+    </div>
+  </Container>
+</section>
+
+<script>
+  import 'img-comparison-slider'
+
+  document.querySelectorAll('img-comparison-slider').forEach((slider) => {
+    let tracked = false
+    slider.addEventListener('slide', () => {
+      if (!tracked) {
+        tracked = true
+        window.dataLayer = window.dataLayer || []
+        window.dataLayer.push({ event: 'before_after_interact' })
+      }
+    })
+  })
+</script>

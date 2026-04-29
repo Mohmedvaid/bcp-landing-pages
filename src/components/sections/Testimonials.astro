@@ -1,0 +1,67 @@
+---
+import Container from '@/components/ui/Container.astro'
+import type { TestimonialsContent } from '@/types/page-content'
+
+interface Props {
+  content: TestimonialsContent
+}
+
+const { content } = Astro.props
+---
+
+<section class="bg-neutral-50 py-section-sm lg:py-section" aria-labelledby="testimonials-heading">
+  <Container size="lg">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-accent-500">
+        {content.eyebrow}
+      </p>
+      <h2 id="testimonials-heading" class="font-heading text-display-sm font-bold text-primary-800 lg:text-display-md">
+        {content.heading}
+      </h2>
+    </div>
+
+    <div class="mt-12 grid gap-8 lg:mt-16 lg:grid-cols-3">
+      {content.items.map((item) => (
+        <article class="flex flex-col rounded-xl border border-neutral-100 bg-white p-6 shadow-soft">
+          <!-- Quote icon -->
+          <svg class="mb-4 h-8 w-8 text-accent-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151C7.546 6.068 5.983 8.789 5.983 11h4v10H0z" />
+          </svg>
+
+          <!-- Stars -->
+          <div class="mb-3 flex gap-0.5" aria-label={`${item.rating} out of 5 stars`}>
+            {Array.from({ length: item.rating }).map(() => (
+              <svg class="h-4 w-4 text-accent-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+          </div>
+
+          <!-- Quote -->
+          <blockquote class="flex-1 text-body-sm text-neutral-700">
+            <p>"{item.quote}"</p>
+          </blockquote>
+
+          <!-- Divider -->
+          <hr class="my-4 border-neutral-100" />
+
+          <!-- Attribution -->
+          <div class="flex items-center gap-3">
+            <img
+              src={item.avatar}
+              alt={`Photo of ${item.name}`}
+              width="40"
+              height="40"
+              class="h-10 w-10 rounded-full object-cover"
+              loading="lazy"
+            />
+            <div>
+              <p class="text-sm font-medium text-primary-800">{item.name}</p>
+              <p class="text-xs text-neutral-500">{item.location} &bull; {item.service}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </Container>
+</section>

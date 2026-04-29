@@ -1,0 +1,56 @@
+---
+import Container from '@/components/ui/Container.astro'
+import type { ServicesContent } from '@/types/page-content'
+
+interface Props {
+  content: ServicesContent
+}
+
+const { content } = Astro.props
+---
+
+<section class="bg-neutral-50 py-section-sm lg:py-section" aria-labelledby="services-heading">
+  <Container size="lg">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-accent-500">
+        {content.eyebrow}
+      </p>
+      <h2 id="services-heading" class="font-heading text-display-sm font-bold text-primary-800 lg:text-display-md">
+        {content.heading}
+      </h2>
+      <p class="mt-4 text-body-lg text-neutral-600">{content.intro}</p>
+    </div>
+
+    <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+      {content.items.map((item) => (
+        <div class="group overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-soft transition-shadow hover:shadow-card">
+          <div class="aspect-[4/3] overflow-hidden">
+            <img
+              src={item.image}
+              alt={item.title}
+              width="400"
+              height="300"
+              class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+          <div class="p-5">
+            <h3 class="mb-2 font-heading text-lg font-semibold text-primary-800">{item.title}</h3>
+            <p class="text-body-sm text-neutral-600">{item.description}</p>
+            {item.linkHref && (
+              <a
+                href={item.linkHref}
+                class="mt-3 inline-flex items-center gap-1 text-sm font-medium text-accent-500 hover:text-accent-600"
+              >
+                Learn more
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </Container>
+</section>

@@ -1,34 +1,85 @@
 ---
 import LandingLayout from '@/components/layout/LandingLayout.astro'
-import Container from '@/components/ui/Container.astro'
-import Button from '@/components/ui/Button.astro'
-import PhoneLink from '@/components/ui/PhoneLink.astro'
+import Hero from '@/components/sections/Hero.astro'
+import TrustStrip from '@/components/sections/TrustStrip.astro'
+import ValueProps from '@/components/sections/ValueProps.astro'
+import Services from '@/components/sections/Services.astro'
+import Process from '@/components/sections/Process.astro'
+import BeforeAfterGallery from '@/components/sections/BeforeAfterGallery.astro'
+import VideoWalkthrough from '@/components/sections/VideoWalkthrough.astro'
+import WhyBoldCoat from '@/components/sections/WhyBoldCoat.astro'
+import Testimonials from '@/components/sections/Testimonials.astro'
+import ServiceArea from '@/components/sections/ServiceArea.astro'
+import FAQ from '@/components/sections/FAQ.astro'
+import FinalCta from '@/components/sections/FinalCta.astro'
+import LandingFooter from '@/components/sections/LandingFooter.astro'
+import LeadForm from '@/components/form/LeadForm.tsx'
+import { interiorPageContent } from '@/content/pages/interior'
+import { buildBreadcrumbSchema, buildServiceSchema, buildFAQSchema } from '@/lib/schema'
 import { siteConfig } from '@/config/site'
+
+const content = interiorPageContent
+
+const schemas = [
+  buildBreadcrumbSchema([
+    { name: 'Home', url: siteConfig.url },
+    { name: 'Interior Painting Quote', url: `${siteConfig.url}/interior-quote/` },
+  ]),
+  buildServiceSchema({
+    name: 'Interior Painting',
+    description: content.meta.description,
+    url: `${siteConfig.url}/interior-quote/`,
+    image: `${siteConfig.url}${content.hero.image}`,
+  }),
+  buildFAQSchema(content.faq.items.map((item) => ({ question: item.question, answer: item.answer }))),
+]
 ---
 
 <LandingLayout
-  title="Get Your Free Interior Painting Quote"
-  description={`Request a free interior painting estimate from ${siteConfig.name}. Premium painting for homes in Chicago and the North Shore.`}
+  title={content.meta.title}
+  description={content.meta.description}
+  canonical={content.meta.canonical}
+  noindex={true}
+  ogImage={content.meta.ogImage}
+  schemas={schemas}
 >
-  <section class="py-24" id="quote-form">
-    <Container size="md">
-      <div class="text-center">
-        <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-accent-500">
-          Phase 1 Placeholder
-        </p>
-        <h1 class="font-heading text-4xl font-bold text-neutral-900">
-          Free Interior Painting Quote
-        </h1>
-        <p class="mx-auto mt-6 max-w-xl text-lg text-neutral-600">
-          Multi-step lead form coming in Phase 2. This landing page is for paid Google Ads traffic.
-        </p>
-        <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Button href={`tel:${siteConfig.phone.tel}`} size="lg">
-            Call {siteConfig.phone.display}
-          </Button>
-          <PhoneLink />
-        </div>
-      </div>
-    </Container>
-  </section>
+  <Hero content={content.hero} trustItems={content.trustStrip.items} />
+  <TrustStrip content={content.trustStrip} />
+  <ValueProps content={content.valueProps} />
+  <Services content={content.services} />
+  <Process content={content.process} />
+  <BeforeAfterGallery content={content.beforeAfter} />
+  <VideoWalkthrough content={content.videoWalkthrough} />
+  <WhyBoldCoat content={content.whyBoldCoat} />
+  <Testimonials content={content.testimonials} />
+  <ServiceArea content={content.serviceArea} />
+  <FAQ content={content.faq} />
+  <FinalCta content={content.finalCta} formId="interior-quote" />
+  <LandingFooter />
 </LandingLayout>
+
+<script>
+  import LeadForm from '@/components/form/LeadForm.tsx'
+  import { createElement } from 'react'
+  import { createRoot } from 'react-dom/client'
+
+  const mountEl = document.getElementById('lead-form-mount')
+  if (mountEl) {
+    const formId = mountEl.dataset.formId || 'interior-quote'
+    const root = createRoot(mountEl)
+    root.render(createElement(LeadForm, { formId }))
+  }
+</script>
+
+<script>
+  // Track CTA clicks
+  document.querySelectorAll('[data-track-label]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const label = (el as HTMLElement).dataset.trackLabel || ''
+      const location = (el as HTMLElement).dataset.trackLocation || ''
+      window.dataLayer = window.dataLayer || []
+      window.dataLayer.push({ event: 'cta_click', cta_label: label, cta_location: location })
+    })
+  })
+</script>
+

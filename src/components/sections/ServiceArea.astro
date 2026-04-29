@@ -1,0 +1,47 @@
+---
+import Container from '@/components/ui/Container.astro'
+import type { ServiceAreaContent } from '@/types/page-content'
+import { siteConfig } from '@/config/site'
+
+interface Props {
+  content: ServiceAreaContent
+}
+
+const { content } = Astro.props
+const suburbs = siteConfig.serviceAreas.suburbs
+---
+
+<section class="bg-white py-section-sm lg:py-section" aria-labelledby="service-area-heading">
+  <Container size="lg">
+    <div class="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
+      <!-- Text -->
+      <div>
+        <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-accent-500">
+          {content.eyebrow}
+        </p>
+        <h2 id="service-area-heading" class="font-heading text-display-sm font-bold text-primary-800 lg:text-display-md">
+          {content.heading}
+        </h2>
+        <p class="mt-4 text-body text-neutral-600">{content.intro}</p>
+
+        <div class="mt-6 columns-2 gap-4">
+          {suburbs.map((suburb) => (
+            <p class="mb-2 text-body-sm text-primary-700">{suburb}</p>
+          ))}
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div>
+        <img
+          src={content.mapImage}
+          alt={content.mapAlt}
+          width="600"
+          height="500"
+          class="w-full rounded-xl shadow-card"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </Container>
+</section>

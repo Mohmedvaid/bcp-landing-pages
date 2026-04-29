@@ -1,0 +1,60 @@
+---
+import Container from '@/components/ui/Container.astro'
+import type { VideoWalkthroughContent } from '@/types/page-content'
+
+interface Props {
+  content: VideoWalkthroughContent
+}
+
+const { content } = Astro.props
+---
+
+<section class="bg-neutral-50 py-section-sm lg:py-section" aria-labelledby="video-heading">
+  <Container size="md">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-accent-500">
+        {content.eyebrow}
+      </p>
+      <h2 id="video-heading" class="font-heading text-display-sm font-bold text-primary-800 lg:text-display-md">
+        {content.heading}
+      </h2>
+      <p class="mt-4 text-body-lg text-neutral-600">{content.subhead}</p>
+    </div>
+
+    <div class="relative mt-10 overflow-hidden rounded-xl shadow-lifted">
+      <button
+        type="button"
+        class="group relative block w-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2"
+        aria-label="Play video walkthrough"
+        data-video-play
+      >
+        <img
+          src={content.thumbnail}
+          alt={content.thumbnailAlt}
+          width="800"
+          height="450"
+          class="aspect-video w-full object-cover"
+          loading="lazy"
+        />
+        <!-- Dark overlay -->
+        <div class="absolute inset-0 bg-primary-900/30 transition-colors group-hover:bg-primary-900/40"></div>
+        <!-- Play button -->
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="flex h-16 w-16 items-center justify-center rounded-full bg-accent-400 shadow-cta transition-transform group-hover:scale-110 lg:h-20 lg:w-20">
+            <svg class="ml-1 h-6 w-6 text-primary-800 lg:h-8 lg:w-8" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
+      </button>
+    </div>
+  </Container>
+</section>
+
+<script>
+  const playBtn = document.querySelector('[data-video-play]')
+  playBtn?.addEventListener('click', () => {
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({ event: 'video_play_intent' })
+  })
+</script>

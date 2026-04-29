@@ -1,0 +1,54 @@
+---
+import Container from '@/components/ui/Container.astro'
+import type { WhyBoldCoatContent } from '@/types/page-content'
+
+interface Props {
+  content: WhyBoldCoatContent
+}
+
+const { content } = Astro.props
+const paragraphs = content.body.split('\n\n')
+---
+
+<section class="bg-white py-section-sm lg:py-section" aria-labelledby="why-heading">
+  <Container size="lg">
+    <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <!-- Text -->
+      <div>
+        <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-accent-500">
+          {content.eyebrow}
+        </p>
+        <h2 id="why-heading" class="font-heading text-display-sm font-bold text-primary-800 lg:text-display-md">
+          {content.heading}
+        </h2>
+        <div class="mt-5 space-y-4">
+          {paragraphs.map((para) => (
+            <p class="text-body text-neutral-600">{para}</p>
+          ))}
+        </div>
+        <ul class="mt-6 space-y-3">
+          {content.differentiators.map((item) => (
+            <li class="flex items-start gap-3">
+              <svg class="mt-0.5 h-5 w-5 shrink-0 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span class="text-body-sm text-primary-800">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Image -->
+      <div>
+        <img
+          src={content.image}
+          alt={content.imageAlt}
+          width="600"
+          height="500"
+          class="w-full rounded-xl object-cover shadow-lifted"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </Container>
+</section>

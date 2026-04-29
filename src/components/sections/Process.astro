@@ -1,0 +1,49 @@
+---
+import Container from '@/components/ui/Container.astro'
+import type { ProcessContent } from '@/types/page-content'
+
+interface Props {
+  content: ProcessContent
+}
+
+const { content } = Astro.props
+---
+
+<section class="bg-white py-section-sm lg:py-section" aria-labelledby="process-heading">
+  <Container size="lg">
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-accent-500">
+        {content.eyebrow}
+      </p>
+      <h2 id="process-heading" class="font-heading text-display-sm font-bold text-primary-800 lg:text-display-md">
+        {content.heading}
+      </h2>
+    </div>
+
+    <div class="relative mt-12 lg:mt-16">
+      <!-- Connecting line (desktop only) -->
+      <div class="absolute left-0 right-0 top-8 hidden h-0.5 bg-neutral-200 lg:block" aria-hidden="true"></div>
+
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {content.steps.map((step, idx) => (
+          <div class="relative flex flex-col items-center text-center lg:items-center">
+            <!-- Step number -->
+            <div class="relative z-10 flex h-16 w-16 items-center justify-center rounded-xl bg-accent-400 shadow-cta">
+              <span class="font-heading text-xl font-bold text-primary-800">{step.number}</span>
+            </div>
+            <h3 class="mt-4 font-heading text-lg font-semibold text-primary-800">{step.title}</h3>
+            <p class="mt-2 text-body-sm text-neutral-600">{step.description}</p>
+            {/* Arrow between steps (desktop, not on last item) */}
+            {idx < content.steps.length - 1 && (
+              <div class="absolute -right-4 top-8 hidden h-4 w-4 text-neutral-300 lg:block" aria-hidden="true">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </Container>
+</section>
